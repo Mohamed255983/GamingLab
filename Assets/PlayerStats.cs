@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -8,14 +11,16 @@ public class PlayerStats : MonoBehaviour
 
     public int health = 3;
     public int lives = 3;
+    public static int score = 0;
+    /*public static bool hasHeart= false;*/
     private float flickerTime = 0f;
     public float flickerDuration = 0.1f;
     private SpriteRenderer sr;
     public bool isImmune = false;
     private float immunityTime = 0f;
     public float immunityDuration = 1.5f;
-
-
+    public TextMeshProUGUI scoreUI;
+    public Image healthBar;
 
 
     void Start()
@@ -34,6 +39,7 @@ public class PlayerStats : MonoBehaviour
             sr.enabled = true;
          }
         }
+        scoreUI.text = " "+score;
     }
 
 
@@ -55,17 +61,20 @@ public class PlayerStats : MonoBehaviour
        
         if (isImmune==false){
             health =health - damage;
+            healthBar.fillAmount = this.health/3f;
             if(health<0)
             health = 0;
             if (lives >0 && health == 0){
                 FindObjectOfType<LevelManager>().RespawnPlayer();
                 health = 3;
+                healthBar.fillAmount = this.health/3f;
                 lives--;
             }
             else if (lives == 0 && health == 0){
-                FindObjectOfType<LevelManager>().RespawnPlayer();
+                //FindObjectOfType<LevelManager>().RespawnPlayer();
                 Debug.Log("Game Over");
                 Destroy(this.gameObject);
+                SceneManager.LoadScene(1);
             }
             Debug.Log("Player Health: " + health.ToString());
             Debug.Log("Player Lives: " + lives.ToString());
